@@ -6,13 +6,36 @@
  *
  * ```
  * var controls = new Controls();
- * while(1) {
- *  controls.listen();
+ * controls.listen();
+ * while(1)
  *  if (controls.pressed.left) doSomething();
- * }
  * ```
  */
 define(function() {
+
+  var toggleKeyPressed = function(val, event) {
+    switch (event.keyCode) {
+      case 87:
+        this.pressed.up = val;
+        break;
+      case 83:
+        this.pressed.down = val;
+        break;
+      case 65:
+        this.pressed.left = val;
+        break;
+      case 68:
+        this.pressed.right = val;
+        break;
+      default:
+        break;
+    };
+
+    this.pressed.active = this.pressed.up   ||
+                          this.pressed.down ||
+                          this.pressed.left ||
+                          this.pressed.right;
+  }
 
   // Export module
   return function() {
@@ -21,10 +44,13 @@ define(function() {
     , up:     false
     , right:  false
     , down:   false
+    , active: false
     };
 
     this.listen = function() {
-      // Actually listen to stuff
+      var _this = this;
+      document.addEventListener('keydown', toggleKeyPressed.bind(this, true));
+      document.addEventListener('keyup', toggleKeyPressed.bind(this, false));
     };
   };
 });
